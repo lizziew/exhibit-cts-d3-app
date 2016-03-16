@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Top Grossing Movies in the US</title>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <link rel='stylesheet' href='//www.simile-widgets.org/styles/common.css' type='text/css' />
+    
+    <link href="/javascripts/actionmovies.json" type="application/json" rel="exhibit/data" />
+    <!--<link href="http://datahub/my table?format=json" type="application/json" rel="exhibit/data" />-->
+    <link href="/javascripts/schema.js" type="application/json" rel="exhibit/data" />
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!--<link rel='stylesheet' href='/stylesheets/style.css' />-->
+
+    <script src="//api.simile-widgets.org/exhibit/current/exhibit-api.js"></script>
+    <link rel="exhibit-extension" type="text/javascript" href="//api.simile-widgets.org/exhibit/current/extensions/time/time-extension.js"/>
+    <link rel="exhibit-extension" href="//projects.csail.mit.edu/exhibit/api/extensions/flotr/flotr-extension.js"/>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    
+    <style>
+      .logo {
+      text-align: center
+      }
+      .lens-table {
+      width: 100%
+      }
+      .lens-table td {
+      padding: 10px
+      }
+    </style>
+  </head>
+  <body>
+	 <nav class="navbar navbar-inverse">
+	      <div class="container-fluid">
+	        <div class="navbar-header">
+	          <a class="navbar-brand" href="#">Top Grossing Movies in the US</a>
+	        </div>
+	        <ul class="nav navbar-nav navbar-right">
+	          <li><a href="#" id="username-display"></a></li>
+	          <li><a href="#" id="request"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+	        </ul>
+	      </div>
+	    </nav>
+	    <div class="row">
+	      <div class="col-md-1"></div>
+	      <div class="col-md-2">
+	        <div data-ex-role="facet" data-ex-expression=".genre" data-ex-show-missing="false" data-ex-height="250px"></div>
+	        <div data-ex-role="facet" data-ex-expression=".gross" data-ex-facet-class="Slider"  data-ex-horizontal="true" data-ex-precision="100" data-ex-facet-label="Earnings" data-ex-histogram="true"></div>
+	      </div>
+	      <div class="col-md-8">
+	        <div data-ex-role="viewPanel">
+	          <div data-ex-role="view" data-ex-view-class="Timeline" data-ex-start=".year" data-ex-color-key=".rating" data-ex-top-band-unit="year" data-ex-top-band-pixels-per-unit="100" data-ex-bottom-band-pixels-per-unit="300"> 
+	            <div data-ex-role="lens">
+	              <span data-ex-content=".year"></span> | <span data-ex-content=".label"></span> | earned $<span data-ex-content=".gross"></span>M
+	            </div>
+	          </div>
+
+	          <div data-ex-role="view" data-ex-view-class="Tabular" data-ex-columns=".label,.year,.gross,.rating" data-ex-column-labels="Title,Year,Grossed (in millions),Rating"></div>
+
+	          <div data-ex-role="view" data-ex-view-class="BarChart" data-ex-label="Horizontal View" data-ex-values=".gross" data-ex-value-label="Earnings (in millions)" data-ex-grouped-by=".label" data-ex-group-label="Movie Name" data-ex-color-coder = "rating" data-ex-color-key = ".rating" data-ex-axis-type="linear" data-ex-vertical-chart="false"></div>
+	        </div>
+	      </div>
+	      <div class="col-md-1"></div>
+	    </div>
+  </body>
+</html>
