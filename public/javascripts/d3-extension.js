@@ -19,7 +19,8 @@
 
     var javascriptFiles = [
         "d3-bar-chart-view.js",
-        "d3-bubble-view.js"
+        "d3-bubble-view.js",
+        "d3-pie-chart-view.js"
     ];
 
     var javascriptLibs = [
@@ -27,7 +28,8 @@
 
     var cssFiles = [
         "bar.css",
-        "bubble.css"
+        "bubble.css",
+        "pie.css"
                     ];
     
     var paramTypes = { bundle: Boolean };
