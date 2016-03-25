@@ -9,7 +9,7 @@
                     
     Exhibit.FlotrExtension = {
         params: {
-            bundle: true
+            bundle: false 
         } 
     };
 
