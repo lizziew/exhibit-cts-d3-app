@@ -1,6 +1,6 @@
-Exhibit.D3BarChartView = function(containerElmt, uiContext) {
+Exhibit.D3BubbleView = function(containerElmt, uiContext) {
 	var view = this;
-	Exhibit.jQuery.extend(this, new Exhibit.View("D3BarChart", containerElmt, uiContext));
+	Exhibit.jQuery.extend(this, new Exhibit.View("D3Bubble", containerElmt, uiContext));
 
 	this.addSettingSpecs(Exhibit.D3BarChartView._settingSpecs);
 
@@ -39,7 +39,7 @@ Exhibit.D3BarChartView = function(containerElmt, uiContext) {
 
 	this.register();
 };
-Exhibit.D3BarChartView._settingSpecs = {
+Exhibit.D3BubbleView._settingSpecs = {
 	"plotHeight" 		: {type : "int", 	 defaultValue : 400},
 	"plotWidth"			: {type : "int"},
 	"xAxisMin" 			: {type : "float", 	 defaultValue : Number.POSITIVE_INFINITY},
@@ -62,7 +62,7 @@ Exhibit.D3BarChartView._settingSpecs = {
 	"stackLabels"		: {type : "text", 	 defaultValue : ""}
 };
 
-Exhibit.D3BarChartView._accessorSpecs = [{
+Exhibit.D3BubbleView._accessorSpecs = [{
 	accessorName : "getProxy",
 	attributeName : "proxy"
 }, {
@@ -83,35 +83,35 @@ Exhibit.D3BarChartView._accessorSpecs = [{
 	type : "text"
 }];
 
-Exhibit.D3BarChartView.create = function(configuration, containerElmt, uiContext) {
-	var view = new Exhibit.D3BarChartView(containerElmt, Exhibit.UIContext.create(configuration, uiContext));
-	Exhibit.D3BarChartView._configure(view, configuration);
+Exhibit.D3BubbleView.create = function(configuration, containerElmt, uiContext) {
+	var view = new Exhibit.D3BubbleView(containerElmt, Exhibit.UIContext.create(configuration, uiContext));
+	Exhibit.D3BubbleView._configure(view, configuration);
 
 	view._internalValidate();
 	view._initializeUI();
 	return view;
 };
 
-Exhibit.D3BarChartView.createFromDOM = function(configElmt, containerElmt, uiContext) {
+Exhibit.D3BubbleView.createFromDOM = function(configElmt, containerElmt, uiContext) {
 	var configuration = Exhibit.getConfigurationFromDOM(configElmt);
-	var view = new Exhibit.D3BarChartView(containerElmt != null ? containerElmt : configElmt, Exhibit.UIContext.createFromDOM(configElmt, uiContext));
+	var view = new Exhibit.D3BubbleView(containerElmt != null ? containerElmt : configElmt, Exhibit.UIContext.createFromDOM(configElmt, uiContext));
 
 	Exhibit.SettingsUtilities.collectSettingsFromDOM(configElmt, view.getSettingSpecs(), view._settings);
-	Exhibit.D3BarChartView.updateAccessorSpecs(Exhibit.D3BarChartView._accessorSpecs, view._settings['values'], view._settings['stacked'], configElmt);
-	Exhibit.SettingsUtilities.createAccessorsFromDOM(configElmt, Exhibit.D3BarChartView._accessorSpecs, view._accessors);
-	Exhibit.D3BarChartView._configure(view, configuration);
+	Exhibit.D3BubbleView.updateAccessorSpecs(Exhibit.D3BubbleView._accessorSpecs, view._settings['values'], view._settings['stacked'], configElmt);
+	Exhibit.SettingsUtilities.createAccessorsFromDOM(configElmt, Exhibit.D3BubbleView._accessorSpecs, view._accessors);
+	Exhibit.D3BubbleView._configure(view, configuration);
 
 	view._internalValidate();
 	view._initializeUI();
 	return view;
 };
 
-Exhibit.D3BarChartView._configure = function(view, configuration) {
-	Exhibit.SettingsUtilities.createAccessors(configuration, Exhibit.D3BarChartView._accessorSpecs, view._accessors);
+Exhibit.D3BubbleView._configure = function(view, configuration) {
+	Exhibit.SettingsUtilities.createAccessors(configuration, Exhibit.D3BubbleView._accessorSpecs, view._accessors);
 	Exhibit.SettingsUtilities.collectSettings(configuration, view.getSettingSpecs(), view._settings);
 
-	view._axisFuncs.x = Exhibit.D3BarChartView._getAxisFunc(view._settings.axisType);
-	view._axisInverseFuncs.x = Exhibit.D3BarChartView._getAxisInverseFunc(view._settings.axisType);
+	view._axisFuncs.x = Exhibit.D3BubbleView._getAxisFunc(view._settings.axisType);
+	view._axisInverseFuncs.x = Exhibit.D3BubbleView._getAxisInverseFunc(view._settings.axisType);
 
 	var accessors = view._accessors;
 
@@ -128,7 +128,7 @@ Exhibit.D3BarChartView._configure = function(view, configuration) {
 };
 
 // Update accessor specs based on values attribute
-Exhibit.D3BarChartView.updateAccessorSpecs = function(specs, values, stacked, configElmt){
+Exhibit.D3BubbleView.updateAccessorSpecs = function(specs, values, stacked, configElmt){
 	var valuesList = values.split(",");
 	var binding = [];
 	// one value given
@@ -164,7 +164,7 @@ Exhibit.D3BarChartView.updateAccessorSpecs = function(specs, values, stacked, co
 }
 
 // Convenience function that maps strings to respective functions
-Exhibit.D3BarChartView._getAxisFunc = function(s) {
+Exhibit.D3BubbleView._getAxisFunc = function(s) {
 	if (s == "logarithmic" || s == "log") {
 		return function(x) {
 			return (Math.log(x) / Math.log(10.0));
@@ -176,7 +176,7 @@ Exhibit.D3BarChartView._getAxisFunc = function(s) {
 	}
 }
 // Convenience function that maps strings to respective functions
-Exhibit.D3BarChartView._getAxisInverseFunc = function(s) {
+Exhibit.D3BubbleView._getAxisInverseFunc = function(s) {
 	if (s == "log" || s == "logarithmic") {
 		return function(x) {
 			return Math.pow(10, x);
@@ -188,11 +188,11 @@ Exhibit.D3BarChartView._getAxisInverseFunc = function(s) {
 	};
 }
 
-Exhibit.D3BarChartView.evaluateSingle = function(expression, itemID, database) {
+Exhibit.D3BubbleView.evaluateSingle = function(expression, itemID, database) {
 	return expression.evaluateSingleOnItem(itemID, database).value;
 }
 
-Exhibit.D3BarChartView.prototype.dispose = function() {
+Exhibit.D3BubbleView.prototype.dispose = function() {
 	Exhibit.jQuery(this.getUIContext().getCollection().getElement()).unbind("onItemsChanged.exhibit", this._onItemsChanged);
 
 	this._dom.dispose();
@@ -201,7 +201,7 @@ Exhibit.D3BarChartView.prototype.dispose = function() {
 	this._dispose();
 };
 
-Exhibit.D3BarChartView.prototype._internalValidate = function() {
+Exhibit.D3BubbleView.prototype._internalValidate = function() {
 	if ("getColorKey" in this._accessors) {
 		if ("colorCoder" in this._settings) {
 			this._colorCoder = this.getUIContext().getMain().getComponent(this._settings.colorCoder);
@@ -213,7 +213,7 @@ Exhibit.D3BarChartView.prototype._internalValidate = function() {
 	}
 };
 
-Exhibit.D3BarChartView.prototype._initializeUI = function() {
+Exhibit.D3BubbleView.prototype._initializeUI = function() {
 	var self = this;
 	var legendWidgetSettings = "_gradientPoints" in this._colorCoder ? "gradient" : {}
 
@@ -232,7 +232,7 @@ Exhibit.D3BarChartView.prototype._initializeUI = function() {
 	this._reconstruct();
 };
 
-Exhibit.D3BarChartView.prototype._reconstruct = function() {
+Exhibit.D3BubbleView.prototype._reconstruct = function() {
 	var self, d3Data, colorCodingFlags, collection, container, database, settings, unplottableItems, color, accessors, vertical_chart, scaleX, unscaleX, currentSize, xyDataPub;
 	self = this;
 	colorCodingFlags = {
@@ -250,7 +250,9 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 	this._dom.plotContainer.innerHTML = "";
 
 	scaleX = self._axisFuncs.x;
+	//    var scaleY = self._axisFuncs.y;
 	unscaleX = self._axisInverseFuncs.x;
+	//    var unscaleY = self._axisInverseFuncs.y;
 
 	currentSize = collection.countRestrictedItems();
 	xyDataPub = [];
@@ -266,6 +268,13 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 		xAxisMin = settings.xAxisMin;
 		xAxisMax = settings.xAxisMax;
 		numStacks = settings.values.split(",").length
+
+		//        var yAxisMin = settings.yAxisMin;
+		//        var yAxisMax = settings.yAxisMax;
+
+		/*
+		 *  Iterate through all items, collecting min and max on both axes
+		 */
 
 		currentSet.visit(function(itemID) {
     		var group, xys, colorKeys, xy, xyKey, xyData, barSum;
@@ -350,7 +359,11 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 				xyData.xy.z=index;
 				index++;
 				if (!settings.stacked){
-					var d = {key:xyData.xy.y, value:xyData.xy.scaledX0};
+					
+					var d;
+					accessors.getColorKey(itemID, database, function(v) {
+						d = {className:xyData.xy.y, value:xyData.xy.scaledX0, packageName: v};
+					});
 					try {
 						d3Data.push(d); 
 					}
@@ -368,7 +381,7 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 		prepareData();
 
 		container = document.createElement("div");
-		container.className = "barChartViewContainer";
+		container.className = "bubbleViewContainer";
 		container.style.height = "100%";
 		this._dom.plotContainer.appendChild(container);
 
@@ -378,75 +391,58 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 	this._dom.setUnplottableMessage(currentSize, unplottableItems);
 };
 
-Exhibit.D3BarChartView.prototype._d3Constructor = function(data, container) {
-  var settings= this._settings;
-  var xLabel = settings.groupLabel;
-  var yLabel = settings.valueLabel;
+Exhibit.D3BubbleView.prototype._d3Constructor = function(data, container) {
+  //console.log(data); 
 
-  /*console.log(xLabel); 
-  console.log(yLabel);
-  console.log(data); */ 
+  var diameter = 960,
+      format = d3.format(",d"),
+      color = d3.scale.category20c();
 
-  var margin = {top: 20, right: 20, bottom: 300, left: 40},
-      width = 960 - margin.left - margin.right,
-      height = 600 - margin.top - margin.bottom;
+  var bubble = d3.layout.pack()
+      .sort(null)
+      .size([diameter, diameter])
+      .padding(1.5);
 
-  var x = d3.scale.ordinal()
-      .rangeRoundBands([0, width], .1);
+  var svg = d3.select(".bubbleViewContainer").append("svg")
+      .attr("width", diameter)
+      .attr("height", diameter)
+      .attr("class", "bubble");
 
-  var y = d3.scale.linear()
-      .range([height, 0]);
+  d3.json("/javascripts/actionmovies.json", function(error, root) {
+    if (error) throw error;
 
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
+    var node = svg.selectAll(".node")
+        .data(bubble.nodes(classes(data))
+        .filter(function(d) { 
+          return !d.children; }))
+      .enter().append("g")
+        .attr("class", "node")
+        .attr("transform", function(d) { 
+          return "translate(" + d.x + "," + d.y + ")"; });
 
-  var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left")
-      .ticks(10, "");
+    node.append("title")
+        .text(function(d) { return d.className + ": $" + format(d.value) + " million"; });
 
-  var svg = d3.select(".barChartViewContainer").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    node.append("circle")
+        .attr("r", function(d) { return d.r; })
+        .style("fill", function(d) { return color(d.packageName); });
 
-  x.domain(data.map(function(d) { return d.key; }));
-  y.domain([0, d3.max(data, function(d) { return d.value; })]);
+    node.append("text")
+        .attr("dy", ".2em")
+        .style("text-anchor", "middle")
+        .text(function(d) { return d.className.substring(0, d.r / 3); });
+  });
 
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis)
-  .selectAll("text")
-    .attr("y", 0)
-    .attr("x", 9)
-    .attr("dy", ".35em")
-    .attr("transform", "rotate(90)")
-    .style("text-anchor", "start"); 
+  function classes(root) {
+    var classes = [];
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text(yLabel);
+    for(i in root) {
+    	node = root[i];
+    	classes.push({packageName: node.packageName, className: node.className, value: node.value});
+    }
 
-  svg.selectAll(".bar")
-      .data(data)
-      .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return x(d.key); })
-      .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.value); })
-      .attr("height", function(d) { return height - y(d.value); });
-
-  function type(d) {
-    d.value = +d.value;
-    return d;
+    return {children: classes};
   }
+
+  d3.select(self.frameElement).style("height", diameter + "px");
 };

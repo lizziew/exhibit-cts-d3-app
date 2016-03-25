@@ -18,14 +18,16 @@
     var extensionName = "D3 extension";
 
     var javascriptFiles = [
-        "d3-bar-chart-view.js"
+        "d3-bar-chart-view.js",
+        "d3-bubble-view.js"
     ];
 
     var javascriptLibs = [
                           ];
 
     var cssFiles = [
-        "bar.css"
+        "bar.css",
+        "bubble.css"
                     ];
     
     var paramTypes = { bundle: Boolean };
