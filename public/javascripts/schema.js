@@ -6,7 +6,7 @@
     },
     "properties": {
         "gross": {
-            "valueType":              "number"
+            "valueType": "number"
         }
     }
 }

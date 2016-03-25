@@ -5,6 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var fs = require('fs');
+var https = require('https');
+
+var options = {
+   key  : fs.readFileSync('/Users/elizabethwei/.localhost-ssl/key.pem'),
+   cert : fs.readFileSync('/Users/elizabethwei/.localhost-ssl/cert.pem')
+};
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -55,6 +63,10 @@ app.use(function(err, req, res, next) {
     error: {}
   });
 });
+
+// https.createServer(options, app).listen(3000, function () {
+//    console.log('Started!');
+// });
 
 
 module.exports = app;

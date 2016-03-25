@@ -3,25 +3,23 @@
   <head>
     <title>Top Grossing Movies in the US</title>
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+
+    <!--Stylesheets--> 
     <link rel='stylesheet' href='//www.simile-widgets.org/styles/common.css' type='text/css' />
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     
-    <link href="/javascripts/actionmovies.json" type="application/json" rel="exhibit/data" />
-    <!--<link href="http://datahub/my table?format=json" type="application/json" rel="exhibit/data" />-->
-    <link href="/javascripts/schema.js" type="application/json" rel="exhibit/data" />
-    
+    <!--Externals--> 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-    <!--<link rel='stylesheet' href='/stylesheets/style.css' />-->
-
     <script src="//api.simile-widgets.org/exhibit/current/exhibit-api.js"></script>
-    <link rel="exhibit-extension" type="text/javascript" href="//api.simile-widgets.org/exhibit/current/extensions/time/time-extension.js"/>
-    <link rel="exhibit-extension" href="//projects.csail.mit.edu/exhibit/api/extensions/flotr/flotr-extension.js"/>
 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-
+    <!--Data--> 
+    <link href="/javascripts/actionmovies.json" type="application/json" rel="exhibit/data" />
     <link href="/javascripts/schema.js" type="application/json" rel="exhibit/data" />
-    
+   
+   	<!--Extensions-->
+    <link rel="exhibit-extension" type="text/javascript" href="/javascripts/flotr-extension.js"/> 
+    <!--<link rel="exhibit-extension" href="//projects.csail.mit.edu/exhibit/api/extensions/flotr/flotr-extension.js"/>--> 
     <style>
       .logo {
       text-align: center
@@ -54,153 +52,12 @@
 	      </div>
 	      <div class="col-md-8">
 	        <div data-ex-role="viewPanel">
-	          <div data-ex-role="view" data-ex-view-class="Timeline" data-ex-start=".year" data-ex-color-key=".rating" data-ex-top-band-unit="year" data-ex-top-band-pixels-per-unit="100" data-ex-bottom-band-pixels-per-unit="300"> 
-	            <div data-ex-role="lens">
-	              <span data-ex-content=".year"></span> | <span data-ex-content=".label"></span> | earned $<span data-ex-content=".gross"></span>M
-	            </div>
-	          </div>
-
 	          <div data-ex-role="view" data-ex-view-class="Tabular" data-ex-columns=".label,.year,.gross,.rating" data-ex-column-labels="Title,Year,Grossed (in millions),Rating"></div>
 
-	          <div data-ex-role="view" data-ex-view-class="BarChart" data-ex-label="Horizontal View" data-ex-values=".gross" data-ex-value-label="Earnings (in millions)" data-ex-grouped-by=".label" data-ex-group-label="Movie Name" data-ex-color-coder = "rating" data-ex-color-key = ".rating" data-ex-axis-type="linear" data-ex-vertical-chart="false"></div>
+	          <div data-ex-role="view" data-ex-view-class="BarChart" data-ex-label="Horizontal View" data-ex-values=".gross" data-ex-value-label="Earnings (in millions)" data-ex-grouped-by=".label" data-ex-group-label="Movie Name" data-ex-color-coder = "rating" data-ex-color-key = ".rating" data-ex-axis-type="linear" data-ex-vertical-chart="false"></div> 
 	        </div>
 	      </div>
 	      <div class="col-md-1"></div>
 	    </div>
   </body>
-
-	<script>
-	    // transport = new Thrift.Transport("http://datahub.csail.mit.edu/service/json"),
-	    // protocol = new Thrift.Protocol(transport),
-	    // client = new DataHubClient(protocol),
-	    // con_params = new ConnectionParams({'user': 'eweitest', 'password': 'eweitest'}),
-	    // con = client.open_connection(con_params),
-	    // res = client.execute_sql(con, 'select * from eweitest.repo1.temperature'); 
-
-	    // console.log(res);  
-
-	    //https://datahub.csail.mit.edu/browse/eweitest/repo2/table/actionmovies/?format=json
-	    //http://datahub.csail.mit.edu/repos/eweitest/repo2/tables/actionmovies?format=json
-
-	    var client_id = "SPkwLQukOg7agAGe7V7337kzI2sqWqvuR3zPHyAF";
-	    var redirect_uri = "https://localhost:3000/";
-	    var base_url = "//datahub-local.mit.edu";
-
-	    // Convenience function to build DataHub URL strings
-	    // Expects a path starting with a slash. If a params object is present,
-	    // it encodes and appends that as query parameters.
-	    function buildURL(path, params) {
-	        query = "";
-	        if (params !== undefined && Object.keys(params).length > 0) {
-	            query = "?" + $.param(params)
-	        }
-	        return base_url + path + query;
-	    }
-
-	    // Convenience function to convert a query string into an associative
-	    // array.
-	    function paramsFromQuery(query) {
-	        params = {};
-	        parts = query.split("&");
-	        for (var i = parts.length - 1; i >= 0; i--) {
-	            pieces = parts[i].split("=");
-	            params[decodeURIComponent(pieces[0])] = decodeURIComponent(pieces[1].replace(/\+/g, " "));
-	        }
-	        return params;
-	    }
-
-	    // Convenience function to copy a value to localStorage if it exists in
-	    // an associate array.
-	    function saveIfSet(assocArray, key) {
-	        if (assocArray[key]) {
-	            console.log("Saving " + key + ": " + assocArray[key]);
-	            localStorage.setItem(key, assocArray[key]);
-	        };
-	    }
-
-	    function displayTokenInfo() {
-	        // Fetch stored info it it's available.
-	        var access_token = localStorage.getItem('access_token');
-	        var scope = localStorage.getItem('scope');
-
-	        // Populate the page's token info.
-	        console.log(access_token);
-	        console.log(scope);
-	    }
-
-	    $(document).ready(function() {
-	      //var returned_url = "https://127.0.0.1:8080/actionmovies.html#access_token=8c24VBESLnE6TlKkLAbrpHzv0hUSL2&token_type=Bearer&expires_in=36000&scope=read+write";
-
-	      // Pull the access token from the URL hash if it's available.
-	      // Overwrite whatever's currently in storage.
-	      if (window.location.hash.length > 1) {
-	          params = paramsFromQuery(window.location.hash.substring(1));
-	          if (params['access_token']) {
-	              keys = ['access_token', 'scope'];
-	              for (var i = keys.length - 1; i >= 0; i--) {
-	                  console.log("Trying " + keys[i]);
-	                  saveIfSet(params, keys[i]);
-	              }
-	              // Clear the hash after handling the access_token.
-	              // Just setting window.location.hash = "" leaves a dangling #.
-	              // history.replaceState("", document.title, window.location.pathname + window.location.search);
-	          }
-	          console.log(params);
-	      }
-
-	      displayTokenInfo();
-
-	      $("#request").click(function() {
-	        var params = {
-	            "response_type": "token",
-	            "scope": "read write",
-	            "client_id": client_id,
-	            "redirect_uri": redirect_uri
-	        };
-	        var authorization_url = buildURL("/oauth2/authorize/", params);
-	        window.location.href = authorization_url;
-	      });
-
-	      $.ajax({
-	        url: buildURL("/api/v1/user/"),
-	        type: 'GET',
-	        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('access_token'));},
-	        dataType: 'json',
-	      })
-	      .fail(function(xhr, status, error) {
-	        console.log("failed");
-	      })
-	      .done(function(data, status, xhr) {
-	        localStorage.setItem('username', data.username);
-	        console.log("username:" + data.username); 
-	        $("#request").hide(); 
-	        $("#username-display").text("Signed in as " + data.username);
-	      })
-
-	      //http://datahub-local.mit.edu:80/api/v1/repos/test/repo1/tables/
-
-	      $.ajax({
-	        url: buildURL("/api/v1/repos/test/repo1/files/actionmovies.json"),
-	        type: 'GET',
-	        beforeSend: function(xhr){xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('access_token'));},
-	        dataType: 'json',
-	      })
-	      .fail(function(xhr, status, error) {
-	        console.log("failed");
-	      })
-	      .done(function(data, status, xhr) {
-	        console.log("omfg " + JSON.stringify(data)); 
-	        // var jsonfile = require('jsonfile')
-	         
-	        // var file = '/asdf.json'; 
-	        // var obj = data; 
-	         
-	        // jsonfile.writeFile(file, obj, function (err) {
-	        //   console.error(err)
-	        // })
-	      })
-
-	    });
-
-	</script>
 </html>
