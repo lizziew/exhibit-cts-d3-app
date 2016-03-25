@@ -20,11 +20,11 @@
  *==================================================
  */
 
-Exhibit.BarChartView = function(containerElmt, uiContext) {
+Exhibit.D3BarChartView = function(containerElmt, uiContext) {
 	var view = this;
-	Exhibit.jQuery.extend(this, new Exhibit.View("barChart", containerElmt, uiContext));
+	Exhibit.jQuery.extend(this, new Exhibit.View("D3BarChart", containerElmt, uiContext));
 
-	this.addSettingSpecs(Exhibit.BarChartView._settingSpecs);
+	this.addSettingSpecs(Exhibit.D3BarChartView._settingSpecs);
 
 	this._accessors = {
 		getPointLabel : function(itemID, database, visitor) {
@@ -61,7 +61,7 @@ Exhibit.BarChartView = function(containerElmt, uiContext) {
 
 	this.register();
 };
-Exhibit.BarChartView._settingSpecs = {
+Exhibit.D3BarChartView._settingSpecs = {
 	"plotHeight" 		: {type : "int", 	 defaultValue : 400},
 	"plotWidth"			: {type : "int"},
 	"xAxisMin" 			: {type : "float", 	 defaultValue : Number.POSITIVE_INFINITY},
@@ -84,7 +84,7 @@ Exhibit.BarChartView._settingSpecs = {
 	"stackLabels"		: {type : "text", 	 defaultValue : ""}
 };
 
-Exhibit.BarChartView._accessorSpecs = [{
+Exhibit.D3BarChartView._accessorSpecs = [{
 	accessorName : "getProxy",
 	attributeName : "proxy"
 }, {
@@ -105,35 +105,35 @@ Exhibit.BarChartView._accessorSpecs = [{
 	type : "text"
 }];
 
-Exhibit.BarChartView.create = function(configuration, containerElmt, uiContext) {
-	var view = new Exhibit.BarChartView(containerElmt, Exhibit.UIContext.create(configuration, uiContext));
-	Exhibit.BarChartView._configure(view, configuration);
+Exhibit.D3BarChartView.create = function(configuration, containerElmt, uiContext) {
+	var view = new Exhibit.D3BarChartView(containerElmt, Exhibit.UIContext.create(configuration, uiContext));
+	Exhibit.D3BarChartView._configure(view, configuration);
 
 	view._internalValidate();
 	view._initializeUI();
 	return view;
 };
 
-Exhibit.BarChartView.createFromDOM = function(configElmt, containerElmt, uiContext) {
+Exhibit.D3BarChartView.createFromDOM = function(configElmt, containerElmt, uiContext) {
 	var configuration = Exhibit.getConfigurationFromDOM(configElmt);
-	var view = new Exhibit.BarChartView(containerElmt != null ? containerElmt : configElmt, Exhibit.UIContext.createFromDOM(configElmt, uiContext));
+	var view = new Exhibit.D3BarChartView(containerElmt != null ? containerElmt : configElmt, Exhibit.UIContext.createFromDOM(configElmt, uiContext));
 
 	Exhibit.SettingsUtilities.collectSettingsFromDOM(configElmt, view.getSettingSpecs(), view._settings);
-	Exhibit.BarChartView.updateAccessorSpecs(Exhibit.BarChartView._accessorSpecs, view._settings['values'], view._settings['stacked'], configElmt);
-	Exhibit.SettingsUtilities.createAccessorsFromDOM(configElmt, Exhibit.BarChartView._accessorSpecs, view._accessors);
-	Exhibit.BarChartView._configure(view, configuration);
+	Exhibit.D3BarChartView.updateAccessorSpecs(Exhibit.D3BarChartView._accessorSpecs, view._settings['values'], view._settings['stacked'], configElmt);
+	Exhibit.SettingsUtilities.createAccessorsFromDOM(configElmt, Exhibit.D3BarChartView._accessorSpecs, view._accessors);
+	Exhibit.D3BarChartView._configure(view, configuration);
 
 	view._internalValidate();
 	view._initializeUI();
 	return view;
 };
 
-Exhibit.BarChartView._configure = function(view, configuration) {
-	Exhibit.SettingsUtilities.createAccessors(configuration, Exhibit.BarChartView._accessorSpecs, view._accessors);
+Exhibit.D3BarChartView._configure = function(view, configuration) {
+	Exhibit.SettingsUtilities.createAccessors(configuration, Exhibit.D3BarChartView._accessorSpecs, view._accessors);
 	Exhibit.SettingsUtilities.collectSettings(configuration, view.getSettingSpecs(), view._settings);
 
-	view._axisFuncs.x = Exhibit.BarChartView._getAxisFunc(view._settings.axisType);
-	view._axisInverseFuncs.x = Exhibit.BarChartView._getAxisInverseFunc(view._settings.axisType);
+	view._axisFuncs.x = Exhibit.D3BarChartView._getAxisFunc(view._settings.axisType);
+	view._axisInverseFuncs.x = Exhibit.D3BarChartView._getAxisInverseFunc(view._settings.axisType);
 
 	var accessors = view._accessors;
 
@@ -150,7 +150,7 @@ Exhibit.BarChartView._configure = function(view, configuration) {
 };
 
 // Update accessor specs based on values attribute
-Exhibit.BarChartView.updateAccessorSpecs = function(specs, values, stacked, configElmt){
+Exhibit.D3BarChartView.updateAccessorSpecs = function(specs, values, stacked, configElmt){
 	var valuesList = values.split(",");
 	var binding = [];
 	// one value given
@@ -186,7 +186,7 @@ Exhibit.BarChartView.updateAccessorSpecs = function(specs, values, stacked, conf
 }
 
 // Convenience function that maps strings to respective functions
-Exhibit.BarChartView._getAxisFunc = function(s) {
+Exhibit.D3BarChartView._getAxisFunc = function(s) {
 	if (s == "logarithmic" || s == "log") {
 		return function(x) {
 			return (Math.log(x) / Math.log(10.0));
@@ -198,7 +198,7 @@ Exhibit.BarChartView._getAxisFunc = function(s) {
 	}
 }
 // Convenience function that maps strings to respective functions
-Exhibit.BarChartView._getAxisInverseFunc = function(s) {
+Exhibit.D3BarChartView._getAxisInverseFunc = function(s) {
 	if (s == "log" || s == "logarithmic") {
 		return function(x) {
 			return Math.pow(10, x);
@@ -210,14 +210,14 @@ Exhibit.BarChartView._getAxisInverseFunc = function(s) {
 	};
 }
 
-Exhibit.BarChartView._colors = ["FF9000", "5D7CBA", "A97838", "8B9BBA", "FFC77F", "003EBA", "29447B", "543C1C"];
-Exhibit.BarChartView._mixColor = "FFFFFF";
+Exhibit.D3BarChartView._colors = ["FF9000", "5D7CBA", "A97838", "8B9BBA", "FFC77F", "003EBA", "29447B", "543C1C"];
+Exhibit.D3BarChartView._mixColor = "FFFFFF";
 
-Exhibit.BarChartView.evaluateSingle = function(expression, itemID, database) {
+Exhibit.D3BarChartView.evaluateSingle = function(expression, itemID, database) {
 	return expression.evaluateSingleOnItem(itemID, database).value;
 }
 
-Exhibit.BarChartView.prototype.dispose = function() {
+Exhibit.D3BarChartView.prototype.dispose = function() {
 	Exhibit.jQuery(this.getUIContext().getCollection().getElement()).unbind("onItemsChanged.exhibit", this._onItemsChanged);
 
 	this._dom.dispose();
@@ -226,7 +226,7 @@ Exhibit.BarChartView.prototype.dispose = function() {
 	this._dispose();
 };
 
-Exhibit.BarChartView.prototype._internalValidate = function() {
+Exhibit.D3BarChartView.prototype._internalValidate = function() {
 	if ("getColorKey" in this._accessors) {
 		if ("colorCoder" in this._settings) {
 			this._colorCoder = this.getUIContext().getMain().getComponent(this._settings.colorCoder);
@@ -238,7 +238,7 @@ Exhibit.BarChartView.prototype._internalValidate = function() {
 	}
 };
 
-Exhibit.BarChartView.prototype._initializeUI = function() {
+Exhibit.D3BarChartView.prototype._initializeUI = function() {
 	var self = this;
 	var legendWidgetSettings = "_gradientPoints" in this._colorCoder ? "gradient" : {}
 
@@ -266,7 +266,7 @@ Exhibit.BarChartView.prototype._initializeUI = function() {
  *  serving as the bars.
  */
 
-Exhibit.BarChartView.prototype._reconstruct = function() {
+Exhibit.D3BarChartView.prototype._reconstruct = function() {
 	var self, colorCodingFlags, collection, container, database, settings, flotrCoord, unplottableItems, color, accessors, vertical_chart, scaleX, unscaleX, currentSize, xyDataPub;
 	self = this;
 	colorCodingFlags = {
@@ -486,7 +486,7 @@ Exhibit.BarChartView.prototype._reconstruct = function() {
 	this._dom.setUnplottableMessage(currentSize, unplottableItems);
 };
 
-Exhibit.BarChartView.prototype._flotrConstructor = function(xyDataPub, flotrCoord, container,  currentSize) {
+Exhibit.D3BarChartView.prototype._flotrConstructor = function(xyDataPub, flotrCoord, container,  currentSize) {
 	var self, settings, xAxisMax, xAxisMin, vertical_chart, axisScale, popupPresent;
 	self = this;
 	settings= this._settings;
