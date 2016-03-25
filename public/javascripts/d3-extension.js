@@ -1,5 +1,5 @@
 /*==================================================
- *  Simile Exhibit Flotr Extension
+ *  Simile Exhibit D3 Extension
  *==================================================
  */
 
@@ -22,10 +22,10 @@
     ];
 
     var javascriptLibs = [
-        "flotr2.js"
                           ];
 
     var cssFiles = [
+        "bar.css"
                     ];
     
     var paramTypes = { bundle: Boolean };

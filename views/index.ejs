@@ -12,6 +12,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="//api.simile-widgets.org/exhibit/current/exhibit-api.js"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
 
     <!--Data--> 
     <link href="/javascripts/actionmovies.json" type="application/json" rel="exhibit/data" />
@@ -53,7 +54,9 @@
 	        <div data-ex-role="viewPanel">
 	          <div data-ex-role="view" data-ex-view-class="Tabular" data-ex-columns=".label,.year,.gross,.rating" data-ex-column-labels="Title,Year,Grossed (in millions),Rating"></div>
 
-	          <div data-ex-role="view" data-ex-view-class="D3BarChart" data-ex-label="Horizontal View" data-ex-values=".gross" data-ex-value-label="Earnings (in millions)" data-ex-grouped-by=".label" data-ex-group-label="Movie Name" data-ex-color-coder = "rating" data-ex-color-key = ".rating" data-ex-axis-type="linear" data-ex-vertical-chart="false"></div>
+	          <div data-ex-role="view" data-ex-view-class="D3BarChart" data-ex-label="Bar Chart" data-ex-values=".gross" data-ex-value-label="Earnings (in millions)" data-ex-grouped-by=".label" data-ex-group-label="Movie Name" data-ex-color-coder = "rating" data-ex-color-key = ".rating" data-ex-axis-type="linear" data-ex-vertical-chart="false"></div>
+
+	          <div class="bar-chart"></div>
 	        </div>
 	      </div>
 	      <div class="col-md-1"></div>

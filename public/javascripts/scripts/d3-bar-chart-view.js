@@ -1,25 +1,3 @@
-/**
- * @fileOverview
- * @author David Huynh
- * @author <a href="mailto:karger@mit.edu">David Karger</a>
- * @author <a href="mailto:ryanlee@zepheira.com">Ryan Lee</a>
- * @author Zhi X Huang
- * @author Denise Che (stacked bar chart)
- * @Library in use : Flotr2
- */
-
-/**==================================================
- *  Exhibit.BarChartView
- *  Creates a bar graph with the items going down the y-axis
- *  and the bars extending out along the x-axis. Supports
- *  logarithmic scales on the x-axis, the color coding True/False
- *  functionality of ScatterPlotView, an ex:scroll option, and stacked charts.
- *
- *  It was born of ScatterPlotView, so there may be unnecessary code
- *  in this file that wasn't pruned.
- *==================================================
- */
-
 Exhibit.D3BarChartView = function(containerElmt, uiContext) {
 	var view = this;
 	Exhibit.jQuery.extend(this, new Exhibit.View("D3BarChart", containerElmt, uiContext));
@@ -210,8 +188,8 @@ Exhibit.D3BarChartView._getAxisInverseFunc = function(s) {
 	};
 }
 
-Exhibit.D3BarChartView._colors = ["FF9000", "5D7CBA", "A97838", "8B9BBA", "FFC77F", "003EBA", "29447B", "543C1C"];
-Exhibit.D3BarChartView._mixColor = "FFFFFF";
+//Exhibit.D3BarChartView._colors = ["FF9000", "5D7CBA", "A97838", "8B9BBA", "FFC77F", "003EBA", "29447B", "543C1C"];
+//Exhibit.D3BarChartView._mixColor = "FFFFFF";
 
 Exhibit.D3BarChartView.evaluateSingle = function(expression, itemID, database) {
 	return expression.evaluateSingleOnItem(itemID, database).value;
@@ -267,7 +245,7 @@ Exhibit.D3BarChartView.prototype._initializeUI = function() {
  */
 
 Exhibit.D3BarChartView.prototype._reconstruct = function() {
-	var self, colorCodingFlags, collection, container, database, settings, flotrCoord, unplottableItems, color, accessors, vertical_chart, scaleX, unscaleX, currentSize, xyDataPub;
+	var self, d3Data, colorCodingFlags, collection, container, database, settings, unplottableItems, color, accessors, vertical_chart, scaleX, unscaleX, currentSize, xyDataPub;
 	self = this;
 	colorCodingFlags = {
 		mixed : false,
@@ -290,10 +268,10 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 
 	currentSize = collection.countRestrictedItems();
 	xyDataPub = [];
-	flotrCoord = {};
 	unplottableItems = [];
 	color = settings.color;
 	this._dom.legendWidget.clear();
+	d3Data = []; 
 	prepareData = function() {
 		var index, xAxisMin, xAxisMax, hasColorKey, currentSet, xDiff, numStacks;
 		currentSet = collection.getRestrictedItems();
@@ -312,6 +290,7 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 
 		currentSet.visit(function(itemID) {
     		var group, xys, colorKeys, xy, xyKey, xyData, barSum;
+
     		group = [];
 	    		if (hasColorKey){
 					accessors.getColorKey(itemID, database, function(item) {
@@ -320,6 +299,9 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 			}
 			if (group.length > 0) {
 				colorKeys = null;
+
+				//console.log("group:")
+				//console.log(group); //ratings 
 				
 				if (hasColorKey) {
 					colorKeys = new Exhibit.Set();
@@ -354,19 +336,15 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 					if (!settings.stacked){
 						try {
 							xy['scaledX0'] = scaleX(xy['x0']);
-							//                            xy.scaledY = scaleY(xy.y);
-							//                            if (!isFinite(xy.scaledX) || !isFinite(xy.scaledY)) {
 							if (!isFinite(xy['scaledX0'])) {
 								continue;
 							}
 						} catch (e) {
 							continue;
-							// ignore the point since we can't scale it, e.g., log(0)
 						}
 						xAxisMin = Math.min(xAxisMin, xy['scaledX0']);
 						xAxisMax = Math.max(xAxisMax, xy['scaledX0']);
 					} else{
-						// no scaling for stacked bar charts
 						barSum = 0;
 						for (var j = 0; j < numStacks; j++){
 							xy['scaledX' + j.toString()] = xy['x' + j.toString()];
@@ -390,365 +368,107 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 				unplottableItems.push(itemID);
 			}
 			if ( typeof xyData == "object") {
-				if (vertical_chart){
-					xyData.xy.z=index;
-					index--;
-					if (!settings.stacked){
-						try {
-							flotrCoord[color].push([xyData.xy.scaledX0, xyData.xy.z]);
-						}
-						catch(e){
-							flotrCoord[color] = [[xyData.xy.scaledX0, xyData.xy.z]];
-						}
-					} else{
-						for (var j = 0; j < numStacks; j++){
-							try {
-								flotrCoord[j].push([xyData.xy['scaledX' + j.toString()], xyData.xy.z]);
-							}
-							catch(e){
-								flotrCoord[j] = [[xyData.xy['scaledX' + j.toString()], xyData.xy.z]];
-							}
-						}
-					}	
-				}
-				else{
-					xyData.xy.z=index;
-					index++;
-					if (!settings.stacked){
-						try {
-							flotrCoord[color].push([xyData.xy.z, xyData.xy.scaledX0]);
-						}
-						catch(e){
-							flotrCoord[color] = [[xyData.xy.z, xyData.xy.scaledX0]];
-						}
-					} else{
-						for (var j = 0; j < numStacks; j++){
-							try {
-								flotrCoord[j].push([xyData.xy.z, xyData.xy['scaledX' + j.toString()]]);
-							}
-							catch(e){
-								flotrCoord[j] = [[xyData.xy.z, xyData.xy['scaledX' + j.toString()]]];
-							}
-						}
+				xyData.xy.z=index;
+				index++;
+				if (!settings.stacked){
+					var d = {key:xyData.xy.y, value:xyData.xy.scaledX0};
+					try {
+						d3Data.push(d); 
 					}
-				};
-				xyData.xy.color = color;
-				xyDataPub.push(xyData);
-			}
+					catch(e){
+						d3Data = [d]; 
+					}
+				} 
+			};
+			xyData.xy.color = color;
+			xyDataPub.push(xyData);
 		});
-		
-		/*
-		 *  Finalize mins, and maxes for both axes
-		 */
-		xDiff = xAxisMax - xAxisMin;
-		//        var yDiff = yAxisMax - yAxisMin;
-
-		var xInterval = 1;
-		if (xDiff > 1) {
-			while (xInterval * 20 < xDiff) {
-				xInterval *= 10;
-			}
-		} else {
-			while (xInterval > xDiff * 20) {                //There was a typo here.
-				xInterval /= 10;			//Often crashes the browser when something isn't done correctly.
-			}
-		}
-		settings.xAxisMin = Math.floor(xAxisMin / xInterval) * xInterval;
-		settings.xAxisMax = Math.ceil(xAxisMax / xInterval) * xInterval;
 	}
 	
 	if (currentSize > 0){
 		prepareData();
-		
-		/*if (vertical_chart && !this._settings.plotHeight) {
-			if (currentSize >= 15){
-				this._dom.plotContainer.style.height = currentSize * 20 + 100 + "px";
-			}else{
-				this._dom.plotContainer.style.height = currentSize * 30 + 100 + "px";
-			}
-		} 
-		if (!vertical_chart && !this._settings.plotWidth){
-			if (currentSize >= 30){
-				this._dom.plotContainer.style.width = currentSize * 20 + 100 + "px";
-			}else{
-				this._dom.plotContainer.style.width = currentSize * 40 + 100 + "px";
-			}
-		}*/
 
 		container = document.createElement("div");
 		container.className = "barChartViewContainer";
 		container.style.height = "100%";
 		this._dom.plotContainer.appendChild(container);
 
-		this._flotrConstructor(xyDataPub, flotrCoord, container, currentSize);
+		this._d3Constructor(d3Data, container);
 	}
 	
 	this._dom.setUnplottableMessage(currentSize, unplottableItems);
 };
 
-Exhibit.D3BarChartView.prototype._flotrConstructor = function(xyDataPub, flotrCoord, container,  currentSize) {
-	var self, settings, xAxisMax, xAxisMin, vertical_chart, axisScale, popupPresent;
-	self = this;
-	settings= this._settings;
-	line_chart  =settings.lineChart;
-	xAxisMax = settings.xAxisMax;
-	xAxisMin = settings.xAxisMin;
-	vertical_chart = settings.verticalChart;
-	axisScale = settings.axisType;
-	num_tick = settings.tickNum;
-	stacked = settings.stacked;
-	stackLabels = settings.stackLabels;
+Exhibit.D3BarChartView.prototype._d3Constructor = function(data, container) {
+  var settings= this._settings;
+  var xLabel = settings.groupLabel;
+  var yLabel = settings.valueLabel;
 
-		
-			Flotr.addPlugin('clickHit', {
-				callbacks : {
-					'flotr:click' : function(e) {
-						
-						this.clickHit.clickHit(e);
-					}
-				},
+  /*console.log(xLabel); 
+  console.log(yLabel);
+  console.log(data); */ 
 
-				clickHit : function(mouse) {
-					var closest = this.clickHit.closest(mouse);
-					accessClosest = closest;
-				},
-				
+  var margin = {top: 20, right: 20, bottom: 300, left: 40},
+      width = 960 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
 
-				closest : function(mouse) {
+  var x = d3.scale.ordinal()
+      .rangeRoundBands([0, width], .1);
 
-					var series = this.series, options = this.options, mouseX = mouse.x, mouseY = mouse.y, compare = Number.MAX_VALUE, compareX = Number.MAX_VALUE, compareY = Number.MAX_VALUE, compareXY = Number.MAX_VALUE, closest = {}, closestX = {}, closestY = {}, check = false, serie, data, distance, distanceX, distanceY, x, y, i, j,within_bar;
-					function setClosest(o) {
-						o.distance = distance;
-						o.distanceX = distanceX;
-						o.distanceY = distanceY;
-						o.seriesIndex = i;
-						o.dataIndex = j;
-						o.x = x;
-						o.y = y;
-					}
-					
-					for ( i = 0; i < series.length; i++) {
+  var y = d3.scale.linear()
+      .range([height, 0]);
 
-						serie = series[i];
-						data = serie.data;
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
 
-						if (data.length)
-							check = true;
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(10, "");
 
-						for ( j = data.length; j--; ) {
+  //var svg = container.append("svg")
+  var svg = d3.select(".barChartViewContainer").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-							x = data[j][0];
-							y = data[j][1];
+  x.domain(data.map(function(d) { return d.key; }));
+  y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
-							if ((x === null && !vertical_chart)||(y === null && vertical_chart))
-								continue;
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
+  .selectAll("text")
+    .attr("y", 0)
+    .attr("x", 9)
+    .attr("dy", ".35em")
+    .attr("transform", "rotate(90)")
+    .style("text-anchor", "start"); 
 
-							distanceX = Math.abs(x - mouseX);
-							distanceY = Math.abs(y - mouseY);
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(yLabel);
 
-							if (vertical_chart && !line_chart){
-								distance = distanceY
-							}else if (!vertical_chart && !line_chart){
-								distance = distanceX
-							}else if (line_chart){
-								distance = distanceX*distanceX+distanceY*distanceY;
-							}
+  svg.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.key); })
+      .attr("width", x.rangeBand())
+      .attr("y", function(d) { return y(d.value); })
+      .attr("height", function(d) { return height - y(d.value); });
 
-							if (distance < compare) {
-								compare = distance;
-								setClosest(closest);
-							}
-
-							if (distanceX < compareX && !vertical_chart) {
-								compareX = distanceX;
-								//console.log("closeX: ", closestX);
-								setClosest(closestX);
-								(mouseY>=0 && mouseY-y<.04*xAxisMax)? within_bar = true : within_bar = false;
-							}
-							if (distanceY < compareY && vertical_chart) {
-								compareY = distanceY;
-								//console.log("closeY: ", closestY);
-								setClosest(closestY);
-								(mouseX>=0 && mouseX-x<.04*xAxisMax)? within_bar = true : within_bar = false;
-							}
-							if (line_chart && (Math.abs(mouseY-y)+Math.abs(mouseX-x))<compareXY){
-								//console.log("in: ", (Math.abs(mouseY-y)+Math.abs(mouseX-x)), (Math.abs(mouseY-y)+Math.abs(mouseX-x)<.04*xAxisMax));
-								if (Math.abs(mouseY-y)+Math.abs(mouseX-x)<.01*xAxisMax) {
-									compareXY = (Math.abs(mouseY-y)+Math.abs(mouseX-x));
-									within_bar = true;
-									setClosest(closest);
-								}else{
-									within_bar = false;
-								}
-							}
-						}
-					}
-
-					return check&&within_bar?{
-						point : closest,
-						x : closestX,
-						y : closestY
-					} : false;
-				}
-			});
-		
-		
-		popupPresent = false;
-		
-		Exhibit.jQuery('body').click(function(e) {
-			var numtickFn, tickFormatterFn;
-
-			//close the existing popUp if the user has clicked outside the popUp
-			if (popupPresent) {
-				if (!Exhibit.jQuery(e.target).closest('.simileAjax-bubble-contentContainer.simileAjax-bubble-contentContainer-pngTranslucent').length) {
-					popupPresent = false;
-					Exhibit.jQuery('.simileAjax-bubble-container').hide();
-				};
-			}
-			
-			if (!popupPresent) {
-				if (Exhibit.jQuery(e.target).closest(container).length){
-					if (line_chart){
-						var items = xyDataPub[Math.abs(accessClosest.point.dataIndex)].items;
-					}else if (!vertical_chart){
-						var items = xyDataPub[Math.abs(accessClosest.x.x)].items;	
-					}else{
-						var items = xyDataPub[Math.abs(accessClosest.y.y)].items;
-					}
-					popupPresent = true;
-					Exhibit.ViewUtilities.openBubbleWithCoords(e.pageX, e.pageY, items, self.getUIContext());
-				}
-			
-			}
-		});
-
-			numtickFn = function(horizontal_bars, axis) {
-				if ((horizontal_bars && axis == "y") || (!horizontal_bars && axis == "x")) {
-					return currentSize;
-				} else {
-					if(num_tick){
-						return num_tick;
-					}else{
-						return Math.min(5, currentSize+1);
-					}
-				}
-			}
-			tickFormatterFn = function(n, axis){
-				var b = Math.abs(parseFloat(n)), verticalness = vertical_chart;
-				if (axis != "x"){
-					verticalness = !vertical_chart;
-				}
-				if (!verticalness) {
-					try {
-						if(typeof xyDataPub[b].xy.y != "undefined"){
-							return xyDataPub[b].xy.y;
-						}
-					} catch(e) {
-						return "";
-					}
-				} else {
-					if ((axisScale == "logarithmic" || axisScale == "log") && !stacked) {
-						return "10^" + n;
-					}
-					return n;
-				}
-				return "";
-			}
-			
-			/*
-			 * Used to fix the tick cutoff issuse that occurs when when no chart title is used.
-			 */
-			Flotr.addPlugin('margin', {
-				callbacks : {
-					'flotr:afterconstruct' : function() {
-						this.plotOffset.left += this.options.fontSize * .5;
-						this.plotOffset.right += this.options.fontSize * 3;
-						this.plotOffset.top += this.options.fontSize * 3;
-						this.plotOffset.bottom += this.options.fontSize * .5;
-					}
-				}
-			});
-			var xMin, yMin, label2, xAxislabel, yAxislabel;
-			vertical_chart == true ? ( xMin = xAxisMin, yMin = null, xAxislabel = settings.valueLabel, yAxislabel = settings.groupLabel) : ( xMin = null, yMin = xAxisMin, xAxislabel = settings.groupLabel, yAxislabel = settings.valueLabel);
-
-
-			var dataList = [], barW = this._settings.barWidth, label = false, labelList = [];
-			// generate stack labels
-			if (stackLabels != ""){
-				label = true;
-				labelList = stackLabels.split(',');
-			}
-			if (!stacked){
-				for (k in flotrCoord){
-					dataList.push({data:flotrCoord[k], color:k});
-				}
-			} else{
-				for (k in flotrCoord){
-					if (!label){
-						dataList.push({data: flotrCoord[k]});
-					} else{
-						dataList.push({data: flotrCoord[k], label: labelList[k].trim()});
-					}
-				}
-			}
-			if (barW > 1.0 || barW <=0.0){
-				barW = 0.8;			//keep at <= 1.0 for the bars to display properly.
-			}
-			
-			Flotr.draw(container, dataList, {
-				HtmlText : false,
-				lines: {
-					show : line_chart,
-				},
-				points: {
-            		show: line_chart,
-        		},
-        		legend : {
-					backgroundColor : '#D2E8FF' // Light blue 
-				},	
-				bars : {
-					show : !line_chart,
-					horizontal : vertical_chart,
-					shadowSize : 0,
-					barWidth : barW,
-					stacked : stacked
-				},
-				grid: {
- 				    color: '#000000',
-            		verticalLines : vertical_chart||line_chart,
-            		horizontalLines : (!vertical_chart)||line_chart
-        	},
-				mouse : {
-					track : true,
-					trackFormatter: function(o){
-						if(!vertical_chart){
-							return xyDataPub[Math.abs(o.x)].xy.y + ": " + o.y;
-						}else{
-							
-						return xyDataPub[Math.abs(o.y)].xy.y + ": " + o.x;
-						}
-						
-					}
-					//relative : true 
-				},
-				xaxis : {
-					min : xMin,
-					labelsAngle : 45,
-					noTicks : numtickFn(vertical_chart, "x"),
-					//autoscale: true,
-					title : xAxislabel,
-					tickFormatter : function(n) {
-						return tickFormatterFn(n, "x");
-					}
-				},
-				yaxis : {
-					//max: xAxisMax*1.1,  //originally used to fix the tick label cutoff issue.
-					min : yMin,
-					noTicks : numtickFn(vertical_chart, "y"),
-					title : yAxislabel,
-					tickFormatter : function(n) {
-						return tickFormatterFn(n, "y");
-					}
-				}
-			});
+  function type(d) {
+    d.value = +d.value;
+    return d;
+  }
 };
