@@ -31,7 +31,9 @@
     var cssFiles = [
         "bar.css",
         "bubble.css",
-        "pie.css"
+        "pie.css",
+        "scatterplot.css",
+        "stacked.css"
                     ];
     
     var paramTypes = { bundle: Boolean };
