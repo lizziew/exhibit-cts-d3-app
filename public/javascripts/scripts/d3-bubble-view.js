@@ -2,7 +2,7 @@ Exhibit.D3BubbleView = function(containerElmt, uiContext) {
 	var view = this;
 	Exhibit.jQuery.extend(this, new Exhibit.View("D3Bubble", containerElmt, uiContext));
 
-	this.addSettingSpecs(Exhibit.D3BarChartView._settingSpecs);
+	this.addSettingSpecs(Exhibit.D3BubbleView._settingSpecs);
 
 	this._accessors = {
 		getPointLabel : function(itemID, database, visitor) {

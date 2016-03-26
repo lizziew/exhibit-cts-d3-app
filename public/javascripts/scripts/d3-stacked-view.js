@@ -1,8 +1,8 @@
-Exhibit.D3ScatterPlotView = function(containerElmt, uiContext) {
+Exhibit.D3StackedView = function(containerElmt, uiContext) {
 	var view = this;
-	Exhibit.jQuery.extend(this, new Exhibit.View("D3ScatterPlot", containerElmt, uiContext));
+	Exhibit.jQuery.extend(this, new Exhibit.View("D3Stacked", containerElmt, uiContext));
 
-	this.addSettingSpecs(Exhibit.D3ScatterPlotView._settingSpecs);
+	this.addSettingSpecs(Exhibit.D3StackedView._settingSpecs);
 
 	this._accessors = {
 		getPointLabel : function(itemID, database, visitor) {
@@ -39,7 +39,7 @@ Exhibit.D3ScatterPlotView = function(containerElmt, uiContext) {
 
 	this.register();
 };
-Exhibit.D3ScatterPlotView._settingSpecs = {
+Exhibit.D3StackedView._settingSpecs = {
 	"plotHeight" 		: {type : "int", 	 defaultValue : 400},
 	"plotWidth"			: {type : "int"},
 	"xAxisMin" 			: {type : "float", 	 defaultValue : Number.POSITIVE_INFINITY},
@@ -62,7 +62,7 @@ Exhibit.D3ScatterPlotView._settingSpecs = {
 	"stackLabels"		: {type : "text", 	 defaultValue : ""}
 };
 
-Exhibit.D3ScatterPlotView._accessorSpecs = [{
+Exhibit.D3StackedView._accessorSpecs = [{
 	accessorName : "getProxy",
 	attributeName : "proxy"
 }, {
@@ -83,35 +83,35 @@ Exhibit.D3ScatterPlotView._accessorSpecs = [{
 	type : "text"
 }];
 
-Exhibit.D3ScatterPlotView.create = function(configuration, containerElmt, uiContext) {
-	var view = new Exhibit.D3ScatterPlotView(containerElmt, Exhibit.UIContext.create(configuration, uiContext));
-	Exhibit.D3ScatterPlotView._configure(view, configuration);
+Exhibit.D3StackedView.create = function(configuration, containerElmt, uiContext) {
+	var view = new Exhibit.D3StackedView(containerElmt, Exhibit.UIContext.create(configuration, uiContext));
+	Exhibit.D3StackedView._configure(view, configuration);
 
 	view._internalValidate();
 	view._initializeUI();
 	return view;
 };
 
-Exhibit.D3ScatterPlotView.createFromDOM = function(configElmt, containerElmt, uiContext) {
+Exhibit.D3StackedView.createFromDOM = function(configElmt, containerElmt, uiContext) {
 	var configuration = Exhibit.getConfigurationFromDOM(configElmt);
-	var view = new Exhibit.D3ScatterPlotView(containerElmt != null ? containerElmt : configElmt, Exhibit.UIContext.createFromDOM(configElmt, uiContext));
+	var view = new Exhibit.D3StackedView(containerElmt != null ? containerElmt : configElmt, Exhibit.UIContext.createFromDOM(configElmt, uiContext));
 
 	Exhibit.SettingsUtilities.collectSettingsFromDOM(configElmt, view.getSettingSpecs(), view._settings);
-	Exhibit.D3ScatterPlotView.updateAccessorSpecs(Exhibit.D3ScatterPlotView._accessorSpecs, view._settings['values'], view._settings['stacked'], configElmt);
-	Exhibit.SettingsUtilities.createAccessorsFromDOM(configElmt, Exhibit.D3ScatterPlotView._accessorSpecs, view._accessors);
-	Exhibit.D3ScatterPlotView._configure(view, configuration);
+	Exhibit.D3StackedView.updateAccessorSpecs(Exhibit.D3StackedView._accessorSpecs, view._settings['values'], view._settings['stacked'], configElmt);
+	Exhibit.SettingsUtilities.createAccessorsFromDOM(configElmt, Exhibit.D3StackedView._accessorSpecs, view._accessors);
+	Exhibit.D3StackedView._configure(view, configuration);
 
 	view._internalValidate();
 	view._initializeUI();
 	return view;
 };
 
-Exhibit.D3ScatterPlotView._configure = function(view, configuration) {
-	Exhibit.SettingsUtilities.createAccessors(configuration, Exhibit.D3ScatterPlotView._accessorSpecs, view._accessors);
+Exhibit.D3StackedView._configure = function(view, configuration) {
+	Exhibit.SettingsUtilities.createAccessors(configuration, Exhibit.D3StackedView._accessorSpecs, view._accessors);
 	Exhibit.SettingsUtilities.collectSettings(configuration, view.getSettingSpecs(), view._settings);
 
-	view._axisFuncs.x = Exhibit.D3ScatterPlotView._getAxisFunc(view._settings.axisType);
-	view._axisInverseFuncs.x = Exhibit.D3ScatterPlotView._getAxisInverseFunc(view._settings.axisType);
+	view._axisFuncs.x = Exhibit.D3StackedView._getAxisFunc(view._settings.axisType);
+	view._axisInverseFuncs.x = Exhibit.D3StackedView._getAxisInverseFunc(view._settings.axisType);
 
 	var accessors = view._accessors;
 
@@ -123,7 +123,7 @@ Exhibit.D3ScatterPlotView._configure = function(view, configuration) {
 };
 
 // Update accessor specs based on values attribute
-Exhibit.D3ScatterPlotView.updateAccessorSpecs = function(specs, values, stacked, configElmt){
+Exhibit.D3StackedView.updateAccessorSpecs = function(specs, values, stacked, configElmt){
 	var valuesList = values.split(",");
 	var binding = [];
 	// one value given
@@ -159,7 +159,7 @@ Exhibit.D3ScatterPlotView.updateAccessorSpecs = function(specs, values, stacked,
 }
 
 // Convenience function that maps strings to respective functions
-Exhibit.D3ScatterPlotView._getAxisFunc = function(s) {
+Exhibit.D3StackedView._getAxisFunc = function(s) {
 	if (s == "logarithmic" || s == "log") {
 		return function(x) {
 			return (Math.log(x) / Math.log(10.0));
@@ -171,7 +171,7 @@ Exhibit.D3ScatterPlotView._getAxisFunc = function(s) {
 	}
 }
 // Convenience function that maps strings to respective functions
-Exhibit.D3ScatterPlotView._getAxisInverseFunc = function(s) {
+Exhibit.D3StackedView._getAxisInverseFunc = function(s) {
 	if (s == "log" || s == "logarithmic") {
 		return function(x) {
 			return Math.pow(10, x);
@@ -183,11 +183,11 @@ Exhibit.D3ScatterPlotView._getAxisInverseFunc = function(s) {
 	};
 }
 
-Exhibit.D3ScatterPlotView.evaluateSingle = function(expression, itemID, database) {
+Exhibit.D3StackedView.evaluateSingle = function(expression, itemID, database) {
 	return expression.evaluateSingleOnItem(itemID, database).value;
 }
 
-Exhibit.D3ScatterPlotView.prototype.dispose = function() {
+Exhibit.D3StackedView.prototype.dispose = function() {
 	Exhibit.jQuery(this.getUIContext().getCollection().getElement()).unbind("onItemsChanged.exhibit", this._onItemsChanged);
 
 	this._dom.dispose();
@@ -196,7 +196,7 @@ Exhibit.D3ScatterPlotView.prototype.dispose = function() {
 	this._dispose();
 };
 
-Exhibit.D3ScatterPlotView.prototype._internalValidate = function() {
+Exhibit.D3StackedView.prototype._internalValidate = function() {
 	if ("getColorKey" in this._accessors) {
 		if ("colorCoder" in this._settings) {
 			this._colorCoder = this.getUIContext().getMain().getComponent(this._settings.colorCoder);
@@ -208,7 +208,7 @@ Exhibit.D3ScatterPlotView.prototype._internalValidate = function() {
 	}
 };
 
-Exhibit.D3ScatterPlotView.prototype._initializeUI = function() {
+Exhibit.D3StackedView.prototype._initializeUI = function() {
 	var self = this;
 	var legendWidgetSettings = "_gradientPoints" in this._colorCoder ? "gradient" : {}
 
@@ -227,8 +227,8 @@ Exhibit.D3ScatterPlotView.prototype._initializeUI = function() {
 	this._reconstruct();
 };
 
-Exhibit.D3ScatterPlotView.prototype._reconstruct = function() {
-	var self, d3Data, colorCodingFlags, collection, container, database, settings, unplottableItems, color, accessors, vertical_chart, scaleX, unscaleX, currentSize, xyDataPub;
+Exhibit.D3StackedView.prototype._reconstruct = function() {
+	var self, d3Data, groupData, colorCodingFlags, collection, container, database, settings, unplottableItems, color, accessors, vertical_chart, scaleX, unscaleX, currentSize, xyDataPub;
 	self = this;
 	colorCodingFlags = {
 		mixed : false,
@@ -253,6 +253,7 @@ Exhibit.D3ScatterPlotView.prototype._reconstruct = function() {
 	color = settings.color;
 	this._dom.legendWidget.clear();
 	d3Data = []; 
+	groupData = []; 
 	prepareData = function() {
 		var index, xAxisMin, xAxisMax, hasColorKey, currentSet, xDiff, numStacks;
 		currentSet = collection.getRestrictedItems();
@@ -348,6 +349,8 @@ Exhibit.D3ScatterPlotView.prototype._reconstruct = function() {
 					var d;
 					accessors.getColorKey(itemID, database, function(v) {
 						d = {key:xyData.xy.y, value:xyData.xy.scaledX0, group: v};
+						if(groupData.indexOf(v) == -1)
+							groupData.push(v); 
 					});
 					try {
 						d3Data.push(d); 
@@ -366,32 +369,68 @@ Exhibit.D3ScatterPlotView.prototype._reconstruct = function() {
 		prepareData();
 
 		container = document.createElement("div");
-		container.className = "scatterPlotViewContainer";
+		container.className = "stackedViewContainer";
 		container.style.height = "100%";
 		this._dom.plotContainer.appendChild(container);
 
-		this._d3Constructor(d3Data, container);
+		this._d3Constructor(d3Data, groupData, container);
 	}
 	
 	this._dom.setUnplottableMessage(currentSize, unplottableItems);
 };
 
-Exhibit.D3ScatterPlotView.prototype._d3Constructor = function(data, container) {
+Exhibit.D3StackedView.prototype._d3Constructor = function(rawData, groupData, container) {
   var settings= this._settings;
   var valueLabel = settings.valueLabel;
   var keyLabel = settings.groupLabel;
 
-  var margin = {top: 20, right: 40, bottom: 30, left: 40},
+  var data = [];
+  for(i in rawData) {
+  	d = rawData[i]; 
+  	if(data.length == 0) {
+  		newitem = {}; 
+  		newitem["key"] = d.key;
+  		for(j in groupData) {
+  			g = groupData[j]; 
+  			newitem[g] = 0; 
+  		}
+  		newitem[d.group] = d.value; 
+  		data.push(newitem);
+  	}
+  	else {
+  		var yearExists = -1;
+  		for(j in data) 
+  			if(data[j].key == d.key)
+  				yearExists = j;
+  		if(yearExists == -1) {
+	  		newitem = {}; 
+	  		newitem["key"] = d.key;
+	  		for(j in groupData) {
+	  			g = groupData[j]; 
+	  			newitem[g] = 0; 
+	  		}
+	  		newitem[d.group] = d.value; 
+	  		data.push(newitem);
+  		}
+  		else {
+  			data[yearExists][d.group] += d.value;
+  		}
+  			
+  	}
+  }
+
+  var margin = {top: 20, right: 30, bottom: 30, left: 40},
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
-  var x = d3.scale.linear()
-      .range([0, width]);
+  var x = d3.scale.ordinal()
+      .rangeRoundBands([0, width], .1);
 
   var y = d3.scale.linear()
-      .range([height, 0]);
+      .rangeRound([height, 0]);
 
-  var color = d3.scale.category10();
+  var color = d3.scale.ordinal()
+      .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
   var xAxis = d3.svg.axis()
       .scale(x)
@@ -399,53 +438,61 @@ Exhibit.D3ScatterPlotView.prototype._d3Constructor = function(data, container) {
 
   var yAxis = d3.svg.axis()
       .scale(y)
-      .orient("left");
+      .orient("left")
+      .tickFormat(d3.format(".2s"));
 
-  var svg = d3.select(".scatterPlotViewContainer").append("svg")
+  var svg = d3.select(".stackedViewContainer").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  d3.json("/javascripts/actionmovies.json", function(error, jsonData) {
-    if (error) throw error; 
+    color.domain(d3.keys(data[0]).filter(function(key) { return key !== "key"; }));
 
-    x.domain(d3.extent(data, function(d) { return d.key; })).nice();
-    y.domain(d3.extent(data, function(d) { return d.value; })).nice();
+    data.forEach(function(d) {
+      var y0 = 0;
+      d.values = color.domain().map(function(name) { 
+      	return {name: name, y0: y0, y1: y0 += +d[name]}; });
+      d.total = d.values[d.values.length - 1].y1;
+    });
+
+    //TBD: SORT BY TOTAL (REVERSABLE) 
+    data.sort(function(a, b) { return a.key - b.key; });
+
+    x.domain(data.map(function(d) { return d.key; }));
+    y.domain([0, d3.max(data, function(d) { return d.total; })]);
 
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-      .append("text")
-        .attr("class", "label")
-        .attr("x", width)
-        .attr("y", -6)
-        .style("text-anchor", "end")
-        .text(keyLabel);
+        .call(xAxis);
 
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
-        .attr("class", "label")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text(valueLabel); 
+        .text($(".y-label").text());
 
-    svg.selectAll(".dot")
+    var state = svg.selectAll(".state")
         .data(data)
-      .enter().append("circle")
-        .attr("class", "dot")
-        .attr("r", 3.5)
-        .attr("cx", function(d) { return x(d.key); })
-        .attr("cy", function(d) { return y(d.value); })
-        .style("fill", function(d) { return color(d.group); });
+      .enter().append("g")
+        .attr("class", "g")
+        .attr("transform", function(d) { return "translate(" + x(d.key) + ",0)"; });
+
+    state.selectAll("rect")
+        .data(function(d) { return d.values; })
+      .enter().append("rect")
+        .attr("width", x.rangeBand())
+        .attr("y", function(d) { return y(d.y1); })
+        .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+        .style("fill", function(d) { return color(d.name); });
 
     var legend = svg.selectAll(".legend")
-        .data(color.domain())
+        .data(color.domain().slice().reverse())
       .enter().append("g")
         .attr("class", "legend")
         .attr("transform", function(d, i) { return "translate(30," + i * 20 + ")"; });
@@ -461,7 +508,5 @@ Exhibit.D3ScatterPlotView.prototype._d3Constructor = function(data, container) {
         .attr("y", 9)
         .attr("dy", ".35em")
         .style("text-anchor", "end")
-        .text(function(d) { return d; }); 
-
-  });  
+        .text(function(d) { return d; });
 };
