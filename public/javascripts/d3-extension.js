@@ -21,7 +21,8 @@
         "d3-bar-chart-view.js",
         "d3-bubble-view.js",
         "d3-pie-chart-view.js",
-        "d3-scatter-plot-view.js"
+        "d3-scatter-plot-view.js",
+        "d3-stacked-view.js"
     ];
 
     var javascriptLibs = [
