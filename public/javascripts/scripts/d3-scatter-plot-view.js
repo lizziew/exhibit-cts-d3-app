@@ -440,8 +440,8 @@ Exhibit.D3ScatterPlotView.prototype._d3Constructor = function(data, container) {
       .enter().append("circle")
         .attr("class", "dot")
         .attr("r", 3.5)
-        .attr("cx", function(d) { console.log(d.key); return x(d.key); })
-        .attr("cy", function(d) { console.log(d.value); return y(d.value); })
+        .attr("cx", function(d) { return x(d.key); })
+        .attr("cy", function(d) { return y(d.value); })
         .style("fill", function(d) { return color(d.group); });
 
     var legend = svg.selectAll(".legend")
