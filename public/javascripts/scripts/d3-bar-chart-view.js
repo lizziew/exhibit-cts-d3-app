@@ -372,6 +372,8 @@ Exhibit.D3BarChartView.prototype._reconstruct = function() {
 		container.style.height = "100%";
 		this._dom.plotContainer.appendChild(container);
 
+		console.log(container); 
+
 		this._d3Constructor(d3Data, container);
 	}
 	
@@ -407,6 +409,7 @@ Exhibit.D3BarChartView.prototype._d3Constructor = function(data, container) {
       .ticks(10, "");
 
   var svg = d3.select(".barChartViewContainer").append("svg")
+  	.classed('svg-container', true)
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
